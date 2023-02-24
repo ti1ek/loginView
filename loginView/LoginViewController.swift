@@ -10,10 +10,11 @@ import UIKit
 
 class LoginViewController: UIViewController {
     
-    private let logoImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.image = UIImage(named: "logo")
+    //MARK: - ViewLifeCycle
+    private lazy var logoImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(named: "logo") ?? UIImage())
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.clipsToBounds = true
         return imageView
     }()
     
@@ -47,22 +48,21 @@ class LoginViewController: UIViewController {
         let button = UIButton(type: .roundedRect)
         button.backgroundColor = .link
         button.setTitleColor(UIColor.white, for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
+        button.titleLabel?.font = .preferredFont(forTextStyle: .headline)
         button.layer.cornerRadius = 16
         button.setTitle("Login", for: .normal)
-        button.addTarget(self, action: #selector(enterButtonTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        
         return button
     }()
     
     private lazy var passwordFogotButton: UIButton = {
         let button = UIButton(type: .system)
         button.setTitle("Forgot your password?", for: .normal)
-        button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 12)
+        button.titleLabel?.font = .preferredFont(forTextStyle: .footnote)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.addTarget(self, action: #selector(didTapPasswordFogotButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -74,6 +74,7 @@ class LoginViewController: UIViewController {
         view.widthAnchor.constraint(equalToConstant: 50).isActive = true
         view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         return view
     }()
     
@@ -82,7 +83,7 @@ class LoginViewController: UIViewController {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.text = "or connect with"
         label.textColor = .white
-        label.font = UIFont.systemFont(ofSize: 16)
+        label.font = .preferredFont(forTextStyle: .body)
         label.textAlignment = .center
         return label
     }()
@@ -93,6 +94,7 @@ class LoginViewController: UIViewController {
         view.widthAnchor.constraint(equalToConstant: 50).isActive = true
         view.backgroundColor = .white
         view.translatesAutoresizingMaskIntoConstraints = false
+        view.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
         return view
     }()
     
@@ -114,7 +116,7 @@ class LoginViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFill
         button.layer.cornerRadius = button.frame.width / 2
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(didTapPasswordFogotButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -128,7 +130,7 @@ class LoginViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFill
         button.layer.cornerRadius = button.frame.width / 2
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(didTapPasswordFogotButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -142,7 +144,7 @@ class LoginViewController: UIViewController {
         button.imageView?.contentMode = .scaleAspectFill
         button.layer.cornerRadius = button.frame.width / 2
         button.clipsToBounds = true
-        button.addTarget(self, action: #selector(didTapPasswordFogotButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -158,7 +160,6 @@ class LoginViewController: UIViewController {
         return stack
     }()
     
-    
     private let signUpLabel: UILabel = {
         var label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -170,11 +171,11 @@ class LoginViewController: UIViewController {
     }()
     
     private lazy var signUpButton: UIButton = {
-        let button = UIButton(type: .system)
+        let button = UIButton()
         button.setTitle("Sign up", for: .normal)
         button.titleLabel?.font = UIFont.boldSystemFont(ofSize: 14)
         button.setTitleColor(UIColor.white, for: .normal)
-        button.addTarget(self, action: #selector(didTapPasswordFogotButton), for: .touchUpInside)
+        button.addTarget(self, action: #selector(buttonTapped), for: .touchUpInside)
         button.clipsToBounds = true
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
@@ -190,7 +191,7 @@ class LoginViewController: UIViewController {
         return stack
     }()
     
-    //MARK: - Override
+    //MARK: - ViewLifeCycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -200,8 +201,9 @@ class LoginViewController: UIViewController {
         setConstraints()
     }
     
+    //MARK: - setupViews
+    
     private func setupViews() {
-
         view.addSubview(logoImageView)
         view.addSubview(loginTextField)
         view.addSubview(passwordTextField)
@@ -210,7 +212,6 @@ class LoginViewController: UIViewController {
         view.addSubview(socialMediaSignUpStackView)
         view.addSubview(socialMediaIconsStackView)
         view.addSubview(signUpStackView)
-        
     }
     
     private func backgroundColorSetup() {
@@ -224,27 +225,23 @@ class LoginViewController: UIViewController {
     
     
     //MARK: - ButtonsActions
-    @objc private func enterButtonTapped() {
-        print("enterButtonTapped")
-    }
-    
-    @objc func didTapPasswordFogotButton() {
-        print("didTapPasswordFogotButton")
+    @objc private func buttonTapped() {
+        print("buttonTapped")
     }
     
     //MARK: - SetConstraints
     func setConstraints() {
         NSLayoutConstraint.activate([
             
-            logoImageView.widthAnchor.constraint(equalToConstant: 160),
+            logoImageView.widthAnchor.constraint(equalToConstant: 170),
             logoImageView.heightAnchor.constraint(equalToConstant: 35),
             logoImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            logoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 140),
+            logoImageView.topAnchor.constraint(equalTo: view.topAnchor, constant: 150),
             
             loginTextField.heightAnchor.constraint(equalToConstant: 35),
             loginTextField.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 70),
             loginTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -70),
-            loginTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 70),
+            loginTextField.topAnchor.constraint(equalTo: logoImageView.bottomAnchor, constant: 50),
             
             passwordTextField.heightAnchor.constraint(equalToConstant: 35),
             passwordTextField.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -70),
@@ -255,7 +252,7 @@ class LoginViewController: UIViewController {
             enterButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 70),
             enterButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -70),
             enterButton.topAnchor.constraint(equalTo: passwordTextField.bottomAnchor, constant: 40),
-        
+            
             passwordFogotButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             passwordFogotButton.topAnchor.constraint(equalTo: enterButton.bottomAnchor, constant: 10),
             
@@ -273,7 +270,7 @@ class LoginViewController: UIViewController {
             signUpStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             signUpStackView.leadingAnchor.constraint(greaterThanOrEqualTo: view.leadingAnchor),
             signUpStackView.trailingAnchor.constraint(lessThanOrEqualTo: view.trailingAnchor)
-
+            
         ])
     }
 }
